@@ -1,2 +1,2 @@
-release: python -m script.init_db_collections
+release: sh -c "python -m script.create_super_user && python -m scripts.seed_database"
 web: fastapi run
