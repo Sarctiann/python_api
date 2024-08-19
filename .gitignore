@@ -1,0 +1,10 @@
+**/*resolved.py
+*resolved.py
+.env
+ADMIN_USER_CONF
+
+.venv
+.ejercicios_venv
+.pytest_cache
+__pycache__
+.DS_Store
