@@ -79,7 +79,7 @@ class OrdersService:
                 {"customer_id": security.auth_user_id},
             )
 
-        if security.auth_user_role != "seller":
+        if security.auth_user_role != "seller" or "seller_id" not in params.filter_dict:
             print(filter_query)
             return [
                 StoredOrder.model_validate(order).model_dump()
@@ -90,11 +90,17 @@ class OrdersService:
 
         if security.is_seller and security.auth_user_id:
 
+            seller_id = (
+                security.auth_user_id
+                if security.auth_user_role == "seller"
+                else params.filter_dict["seller_id"]
+            )
+
             return [
                 StoredOrder.model_validate(order).model_dump()
                 for order in cls.collection.aggregate(
                     get_orders_by_seler_id_aggregate_query(
-                        security.auth_user_id, params.filter_dict
+                        seller_id, params.filter_dict
                     )
                 )
             ]

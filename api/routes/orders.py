@@ -47,11 +47,16 @@ def get_shopping_orders(security: SecurityDependency, orders: OrdersServiceDepen
     return orders.get_all(QueryParams(filter="status=shopping"), security)
 
 
-@orders_router.get("/get_by_seller")
+@orders_router.get("/get_by_seller/{id}")
 def get_orders_by_seller_id(
-    security: SecurityDependency, orders: OrdersServiceDependency
+    id: PydanticObjectId, security: SecurityDependency, orders: OrdersServiceDependency
 ):
-    return orders.get_all(QueryParams(), security)
+    if security.auth_user_role != "admin" or security.auth_user_id != id:
+        return JSONResponse(
+            {"error": "User does not have access to this orders"},
+            status_code=status.HTTP_401_UNAUTHORIZED,
+        )
+    return orders.get_all(QueryParams(filter=f"seller_id={id}"), security)
 
 
 @orders_router.get("/get_by_customer/{id}")
