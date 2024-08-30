@@ -2,6 +2,7 @@ __all__ = ["Product", "StoredProduct", "UpdationProduct"]
 
 from pydantic import BaseModel, Field
 from pydantic_mongo import PydanticObjectId
+from datetime import datetime
 
 
 class Product(BaseModel):
@@ -9,17 +10,18 @@ class Product(BaseModel):
     name: str
     price: float
     quantity: int
-    description: str = Field(default=None)
-    image: str = Field(default=None)
+    description: str
+    image: str
+    deactivated_at: datetime | None = Field(default=None)
 
 
 class UpdationProduct(BaseModel):
     seller_id: PydanticObjectId = Field(default=None)
-    name: str = Field(default=None)
-    price: float = Field(default=None)
-    quantity: int = Field(default=None)
-    description: str = Field(default=None)
-    image: str = Field(default=None)
+    name: str | None
+    price: float | None
+    quantity: int | None
+    description: str | None
+    image: str | None
 
 
 class StoredProduct(Product):

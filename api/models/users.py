@@ -1,5 +1,4 @@
 __all__ = [
-    "BaseUser",
     "LoginUser",
     "PublicStoredUser",
     "PrivateStoredUser",
@@ -26,16 +25,15 @@ class Role(str, Enum):
 
 class BaseUser(BaseModel):
     username: str
-    role: Role = Role.customer
-    email: str = Field(default=None)
-    image: str | None = Field(default=None)
+    email: str | None
+    image: str | None | None
 
 
 class UpdationUser(BaseUser):
-    username: str = Field(default=None)
-    role: Role = Field(default=None)
-    email: str = Field(default=None)
-    image: str | None = Field(default=None)
+    username: str | None
+    role: Role | None
+    email: str | None
+    image: str | None | None
 
 
 class CreationUser(BaseUser):
@@ -49,6 +47,7 @@ class LoginUser(BaseModel):
 
 
 class PublicStoredUser(BaseUser):
+    role: Role
     id: PydanticObjectId = Field(validation_alias=AliasChoices("_id", "id"))
 
 

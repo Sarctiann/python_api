@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic_mongo import PydanticObjectId
 
-from ..models import BaseUser, CreationUser, UpdationUser
+from ..models import CreationUser, UpdationUser
 from ..services import UsersServiceDependency, AuthServiceDependency
 from ..__common_deps import QueryParamsDependency
 

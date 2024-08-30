@@ -4,6 +4,7 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
 from pydantic_mongo import PydanticObjectId
+from bson import ObjectId
 
 from ..config import COLLECTIONS, db
 from ..models import Product, StoredProduct, UpdationProduct
@@ -16,7 +17,10 @@ class ProductsService:
 
     @classmethod
     def create_one(cls, product: Product):
-        insertion_product = product.model_dump(exclude_unset=True)
+        insertion_product = product.model_dump(
+            exclude_unset=True, exclude={"seller_id"}
+        )
+        insertion_product.update(seller_id=ObjectId(product.seller_id))
         result = cls.collection.insert_one(insertion_product)
         if result:
             return str(result.inserted_id)
@@ -42,7 +46,7 @@ class ProductsService:
     def update_one(cls, id: PydanticObjectId, product: UpdationProduct):
         document = cls.collection.find_one_and_update(
             {"_id": id},
-            {"$set": product.model_dump()},
+            {"$set": product.model_dump(exclude_unset=True)},
             return_document=True,
         )
 
