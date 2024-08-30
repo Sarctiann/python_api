@@ -1,6 +1,6 @@
 __all__ = ["products_router"]
 
-from fastapi import status
+from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
 from pydantic_mongo import PydanticObjectId
@@ -21,15 +21,21 @@ async def list_active_products(
 
 @products_router.get("/deleted")
 async def list_deleted_products(
-    products: ProductsServiceDependency, params: QueryParamsDependency
+    products: ProductsServiceDependency,
+    params: QueryParamsDependency,
+    security: SecurityDependency,
 ):
+    security.is_admin_or_raise
     return products.get_all_deleted(params)
 
 
 @products_router.get("/include_deleted")
 async def list_products(
-    products: ProductsServiceDependency, params: QueryParamsDependency
+    products: ProductsServiceDependency,
+    params: QueryParamsDependency,
+    security: SecurityDependency,
 ):
+    security.is_admin_or_raise
     return products.get_all(params)
 
 
@@ -54,11 +60,34 @@ async def create_product(
 
 @products_router.put("/{id}")
 async def update_product(
-    id: PydanticObjectId, product: UpdationProduct, products: ProductsServiceDependency
+    id: PydanticObjectId,
+    product: UpdationProduct,
+    products: ProductsServiceDependency,
+    security: SecurityDependency,
 ):
+    security.is_seller_or_raise
+    if db_product := products.get_one(id):
+        if security.auth_user_id != db_product.get("seller_id"):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="You are not authorized to update this product",
+            )
+
     return products.update_one(id, product)
 
 
 @products_router.delete("/{id}")
-async def delete_product(id: PydanticObjectId, products: ProductsServiceDependency):
+async def delete_product(
+    id: PydanticObjectId,
+    products: ProductsServiceDependency,
+    security: SecurityDependency,
+):
+    security.is_seller_or_raise
+    if db_product := products.get_one(id):
+        if security.auth_user_id != db_product.get("seller_id"):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="You are not authorized to update this product",
+            )
+
     return products.delete_one(id)

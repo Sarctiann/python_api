@@ -80,9 +80,3 @@ probar lo siguiente:
 ---
 
 ---
-
-### TODO:
-
-- Modificar los scripts
-  - seed_database
-- Proteger los endpoints
