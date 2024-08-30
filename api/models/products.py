@@ -17,11 +17,11 @@ class Product(BaseModel):
 
 class UpdationProduct(BaseModel):
     seller_id: PydanticObjectId = Field(default=None)
-    name: str | None
-    price: float | None
-    quantity: int | None
-    description: str | None
-    image: str | None
+    name: str | None = None
+    price: float | None = None
+    quantity: int | None = None
+    description: str | None = None
+    image: str | None = None
 
 
 class StoredProduct(Product):

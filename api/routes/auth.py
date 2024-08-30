@@ -6,15 +6,6 @@ from ..services import AuthServiceDependency, SecurityDependency, UsersServiceDe
 auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@auth_router.post("/register")
-def register(
-    user: CreationUser, users: UsersServiceDependency, auth: AuthServiceDependency
-):
-    hash_password = auth.get_password_hash(user.password)
-    inserted_id = users.create_one(user, hash_password)
-    return {"result message": f"User created with id: {inserted_id}"}
-
-
 @auth_router.post("/login")
 def login_with_cookie(
     user: LoginUser,

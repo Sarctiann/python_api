@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from pydantic_mongo import PydanticObjectId
 
 from ..models import CreationUser, UpdationUser
-from ..services import UsersServiceDependency, AuthServiceDependency
+from ..services import UsersServiceDependency, AuthServiceDependency, SecurityDependency
 from ..__common_deps import QueryParamsDependency
 
 users_router = APIRouter(prefix="/Users", tags=["Users"])
@@ -18,7 +18,22 @@ def create_user(
 
 
 @users_router.get("/")
-def get_all_users(users: UsersServiceDependency, params: QueryParamsDependency):
+def get_all_active_users(users: UsersServiceDependency, params: QueryParamsDependency):
+    return users.get_all_active(params)
+
+
+@users_router.get("/deleted")
+def get_all_deleted_users(users: UsersServiceDependency, params: QueryParamsDependency):
+    return users.get_all_deleted(params)
+
+
+@users_router.get("/include_deleted")
+def get_all_users(
+    users: UsersServiceDependency,
+    params: QueryParamsDependency,
+    security: SecurityDependency,
+):
+    security.is_admin_or_raise
     return users.get_all(params)
 
 

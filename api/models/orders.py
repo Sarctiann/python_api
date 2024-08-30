@@ -5,7 +5,7 @@ from pydantic_mongo import PydanticObjectId
 from enum import Enum
 
 
-class OrderStatus(Enum):
+class OrderStatus(str, Enum):
     shopping = "shopping"
     completed = "completed"
     cancelled = "cancelled"

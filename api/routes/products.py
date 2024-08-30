@@ -13,6 +13,20 @@ products_router = APIRouter(prefix="/products", tags=["Products"])
 
 
 @products_router.get("/")
+async def list_active_products(
+    products: ProductsServiceDependency, params: QueryParamsDependency
+):
+    return products.get_all_active(params)
+
+
+@products_router.get("/deleted")
+async def list_deleted_products(
+    products: ProductsServiceDependency, params: QueryParamsDependency
+):
+    return products.get_all_deleted(params)
+
+
+@products_router.get("/include_deleted")
 async def list_products(
     products: ProductsServiceDependency, params: QueryParamsDependency
 ):

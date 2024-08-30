@@ -6,9 +6,10 @@ __all__ = [
     "UpdationUser",
 ]
 
+from datetime import datetime
 from enum import Enum
 
-from pydantic import BaseModel, Field, AliasChoices
+from pydantic import AliasChoices, BaseModel, Field
 from pydantic_mongo import PydanticObjectId
 
 
@@ -25,15 +26,14 @@ class Role(str, Enum):
 
 class BaseUser(BaseModel):
     username: str
-    email: str | None
-    image: str | None | None
+    email: str | None = None
+    image: str | None = None
 
 
 class UpdationUser(BaseUser):
-    username: str | None
-    role: Role | None
-    email: str | None
-    image: str | None | None
+    username: str | None = None
+    email: str | None = None
+    image: str | None = None
 
 
 class CreationUser(BaseUser):
@@ -48,9 +48,12 @@ class LoginUser(BaseModel):
 
 class PublicStoredUser(BaseUser):
     role: Role
+    deactivated_at: datetime | None = Field(default=None)
     id: PydanticObjectId = Field(validation_alias=AliasChoices("_id", "id"))
 
 
 class PrivateStoredUser(BaseUser):
+    role: Role
     id: PydanticObjectId = Field(alias="_id")
+    deactivated_at: datetime | None = Field(default=None)
     hash_password: str

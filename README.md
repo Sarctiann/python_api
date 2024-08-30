@@ -85,10 +85,4 @@ probar lo siguiente:
 
 - Modificar los scripts
   - seed_database
-  - drop_collections
-- Actualizar los servicios
-  - incluir el aggregate
-  - cambiar str -> ObjectId
-  - revisar los métodos
 - Proteger los endpoints
-  - HTTPExceptions
