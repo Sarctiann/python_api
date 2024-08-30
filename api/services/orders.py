@@ -74,12 +74,13 @@ class OrdersService:
     def get_all(cls, params: QueryParamsDependency, security: SecurityDependency):
         filter_query: dict = {}
 
-        if security.is_customer:
+        if security.auth_user_role == "customer":
             filter_query.update(
                 {"customer_id": security.auth_user_id},
             )
 
-        if not security.is_seller:
+        if security.auth_user_role != "seller":
+            print(filter_query)
             return [
                 StoredOrder.model_validate(order).model_dump()
                 for order in params.query_collection(
@@ -102,12 +103,12 @@ class OrdersService:
     def get_one(cls, id: PydanticObjectId, security: SecurityDependency):
         filter_criteria: dict = {"_id": id}
 
-        if security.is_customer:
+        if security.auth_user_role == "customer":
             filter_criteria.update(
                 {"customer_id": security.auth_user_id},
             )
 
-        if not security.is_seller:
+        if not security.auth_user_role != "seller":
             if db_order := cls.collection.find_one(filter_criteria):
                 return StoredOrder.model_validate(db_order).model_dump()
             else:

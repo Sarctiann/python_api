@@ -21,7 +21,6 @@ def get_all_orders(
     security: SecurityDependency,
     params: QueryParamsDependency,
 ):
-    security.is_admin_or_raise
     return orders.get_all(params, security)
 
 
