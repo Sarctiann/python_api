@@ -79,4 +79,14 @@ probar lo siguiente:
 
 ---
 
+## Para correr los scripts
+
+> Con el entorno virtual activado:
+
+- `python -m scripts.drop_collections`
+- `python -m scripts.seed_database`
+- `python -m scripts.create_super_user`
+
+---
+
 ---
