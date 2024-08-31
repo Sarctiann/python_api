@@ -2,7 +2,7 @@ __all__ = ["QueryParamsDependency", "QueryParams"]
 
 from dataclasses import dataclass
 from typing import Annotated, Literal
-
+from bson import ObjectId
 from fastapi import Depends
 from pymongo.collection import Collection
 
@@ -23,7 +23,11 @@ def format_value(v):
     return (
         int(v)
         if v.strip().isdigit()
-        else float(v) if v.strip().isdecimal() else v.strip()
+        else (
+            float(v)
+            if v.strip().isdecimal()
+            else ObjectId(v.strip()) if len(v.strip()) == 24 else v.strip()
+        )
     )
 
 

@@ -15,7 +15,7 @@ from ..services import (
 orders_router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
-@orders_router.get("/get_all")
+@orders_router.get("/")
 def get_all_orders(
     orders: OrdersServiceDependency,
     security: SecurityDependency,
@@ -32,17 +32,17 @@ def get_order_by_id(
     return orders.get_one(id, security)
 
 
-@orders_router.get("/get_completed")
+@orders_router.get("/get_completed/")
 def get_completed_orders(security: SecurityDependency, orders: OrdersServiceDependency):
     return orders.get_all(QueryParams(filter="status=completed"), security)
 
 
-@orders_router.get("/get_cancelled")
+@orders_router.get("/get_cancelled/")
 def get_cancelled_orders(security: SecurityDependency, orders: OrdersServiceDependency):
     return orders.get_all(QueryParams(filter="status=cancelled"), security)
 
 
-@orders_router.get("/get_shopping")
+@orders_router.get("/get_shopping/")
 def get_shopping_orders(security: SecurityDependency, orders: OrdersServiceDependency):
     return orders.get_all(QueryParams(filter="status=shopping"), security)
 
@@ -51,7 +51,7 @@ def get_shopping_orders(security: SecurityDependency, orders: OrdersServiceDepen
 def get_orders_by_seller_id(
     id: PydanticObjectId, security: SecurityDependency, orders: OrdersServiceDependency
 ):
-    if security.auth_user_role != "admin" or security.auth_user_id != id:
+    if security.auth_user_role != "admin" and security.auth_user_id != id:
         return JSONResponse(
             {"error": "User does not have access to this orders"},
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -63,20 +63,22 @@ def get_orders_by_seller_id(
 def get_orders_by_customer_id(
     id: PydanticObjectId, security: SecurityDependency, orders: OrdersServiceDependency
 ):
-    auth_user_id = security.auth_user_id
-    assert (
-        auth_user_id == id or security.auth_user_role == "admin"
-    ), "User does not have access to this orders"
+    if security.auth_user_id != id and security.auth_user_role != "admin":
+        return (
+            JSONResponse(
+                {"error": "User does not have access to this orders"},
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            ),
+        )
 
-    params = QueryParams(filter=f"custommer_id={id}")
-    return orders.get_all(params, security)
+    return orders.get_all(QueryParams(filter=f"customer_id={id}"), security)
 
 
 @orders_router.get("/get_by_product/{id}")
 def get_orders_by_product_id(
     id: PydanticObjectId, security: SecurityDependency, orders: OrdersServiceDependency
 ):
-    params = QueryParams(filter=f"order_products.$product_id={id}")
+    params = QueryParams(filter=f"order_products.product_id={id}")
     return orders.get_all(params, security)
 
 

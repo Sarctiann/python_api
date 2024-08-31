@@ -53,7 +53,7 @@ class AuthService:
 class SecurityService:
     def __init__(self, credentials: AuthCredentials):
         self.auth_user_id = credentials.subject.get("id")
-        self.auth_user_name = credentials.subject.get("name")
+        self.auth_user_name = credentials.subject.get("username")
         self.auth_user_email = credentials.subject.get("email")
         self.auth_user_role = credentials.subject.get("role")
 

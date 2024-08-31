@@ -1,8 +1,9 @@
 __all__ = ["Order", "StoredOrder"]
 
+from enum import Enum
+
 from pydantic import BaseModel, Field
 from pydantic_mongo import PydanticObjectId
-from enum import Enum
 
 
 class OrderStatus(str, Enum):
