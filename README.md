@@ -9,12 +9,12 @@
 
 ## Instrucciones (lazy version, para usuarios de VSCode)
 
+1. Poné [buena música](https://youtu.be/n7_cjH8SlHI?si=JRRArISSHXEaiekr&t=530)
+   y volvé.
 1. Abrir la previsualización de este archivo para continuar:
 
    - `[CTRL] + [SHIFT] + [V]` (Windows/linux) o `[CMD] + [SHIFT] + [V]` (Mac)
 
-1. Poné [buena música](https://youtu.be/n7_cjH8SlHI?si=JRRArISSHXEaiekr&t=530)
-   y volvé.
 1. [Instalar Python 3.12](https://www.python.org/downloads/)
 1. Instalar poetry (global):
 
